@@ -14,10 +14,13 @@ import ru.prostostudia.springapi.exceptions.EmployeeStorageIsFullException;
 public class EmployeeController {
 
     private final EmployeeServiceInterface employeeService;
+    private final DepartmentServiceInterface departmentService;
 
 
-    public EmployeeController(EmployeeServiceInterface employeeService) {
+    public EmployeeController(EmployeeServiceInterface employeeService, DepartmentServiceInterface departmentService) {
         this.employeeService = employeeService;
+        this.departmentService = departmentService;
+        departmentService.Init(employeeService);
     }
 
     @GetMapping
@@ -55,7 +58,7 @@ public class EmployeeController {
     @GetMapping(path = "/departments/all", params = "departmentId")
     public Object employeeInDepartment(@RequestParam("departmentId") int department) {
         try {
-            return employeeService.getEmployees(department);
+            return departmentService.getEmployeesInDepartment(department);
         } catch (EmployeeNotFoundException e) {
             return e.getMessage();
         }
@@ -63,7 +66,7 @@ public class EmployeeController {
     @GetMapping(path = "/departments/all")
     public Object employeeGroupByDepartment() {
         try {
-            return employeeService.getEmployeesGroupByDepartment();
+            return departmentService.getEmployeesGroupByDepartment();
         } catch (EmployeeNotFoundException e) {
             return e.getMessage();
         }
@@ -72,7 +75,7 @@ public class EmployeeController {
     @GetMapping(path = "/departments/min-salary")
     public Object employeeMinSalary(@RequestParam("departmentId") int department) {
         try {
-            return employeeService.getSalaryMin(department);
+            return departmentService.getSalaryMin(department);
         } catch (EmployeeNotFoundException e) {
             return e.getMessage();
         }
@@ -81,7 +84,7 @@ public class EmployeeController {
     @GetMapping(path = "/departments/max-salary")
     public Object employeeMaxSalary(@RequestParam("departmentId") int department) {
         try {
-            return employeeService.getSalaryMax(department);
+            return departmentService.getSalaryMax(department);
         } catch (EmployeeNotFoundException e) {
             return e.getMessage();
         }

@@ -6,7 +6,6 @@ import ru.prostostudia.springapi.exceptions.EmployeeNotFoundException;
 import ru.prostostudia.springapi.exceptions.EmployeeStorageIsFullException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService implements EmployeeServiceInterface {
@@ -41,17 +40,9 @@ public class EmployeeService implements EmployeeServiceInterface {
         this.maxEmployees = maxEmployees;
     }
 
-/*    private List<Integer> getEmployeesDepartment() {   // На будущее - получить номера отделов сотрудников
-        return employeesBook.values().stream()
-                .map(Employee::getDepartment)
-                .distinct()
-                .collect(Collectors.toList());
-    } */
-
-    private List<Employee> getEmployeesInDepartment(int department) {
-        return employeesBook.values().stream()
-                .filter(e -> e.getDepartment() == department || department == ALL_DEPARTMENTS)
-                .toList();
+    @Override
+    public Map<String, Employee> getEmployees() {
+        return employeesBook;
     }
 
     @Override
@@ -67,22 +58,6 @@ public class EmployeeService implements EmployeeServiceInterface {
         throw new EmployeeAlreadyAddedException();
     }
 
-
-    @Override
-    public Employee getSalaryMin(int department) {
-        Optional<Employee> employeeMin = getEmployeesInDepartment(department).stream()
-                .min(Comparator.comparingDouble(Employee::getSalary));
-        if (employeeMin.isPresent()) return employeeMin.get();
-        throw new EmployeeNotFoundException();
-    }
-
-    @Override
-    public Employee getSalaryMax(int department) {
-        Optional<Employee> employeeMax = getEmployeesInDepartment(department).stream()
-                .max(Comparator.comparingDouble(Employee::getSalary));
-        if (employeeMax.isPresent()) return employeeMax.get();
-        throw new EmployeeNotFoundException();
-    }
 
     @Override
     public void addEmployee(String firstName, String lastName, int department, double salary) {
@@ -106,22 +81,6 @@ public class EmployeeService implements EmployeeServiceInterface {
         throw new EmployeeNotFoundException();
     }
 
-    @Override
-    public Map<String, Employee> getEmployees(int department) {
-        return employeesBook.entrySet().stream() // раскопал про entrySet - попробовал
-                .filter(e -> e.getValue().getDepartment() == department || department == ALL_DEPARTMENTS)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
 
-    @Override
-    public Map<String, Employee> getEmployees() {
-        return getEmployees(ALL_DEPARTMENTS);
-    }
-
-    @Override
-    public Map<Integer, List<Employee>> getEmployeesGroupByDepartment() {
-        return employeesBook.values().stream()
-                .collect(Collectors.groupingBy(Employee::getDepartment));
-    }
 }
 
