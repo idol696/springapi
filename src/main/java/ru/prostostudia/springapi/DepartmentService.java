@@ -12,11 +12,9 @@ import java.util.stream.Collectors;
 @Service
 public class DepartmentService implements DepartmentServiceInterface {
 
-    private EmployeeServiceInterface employeeService;
+    private final EmployeeServiceInterface employeeService;
 
-
-    @Override
-    public void Init(EmployeeServiceInterface employeeService) {
+    public DepartmentService (EmployeeServiceInterface employeeService) {
         this.employeeService = employeeService;
     }
 
