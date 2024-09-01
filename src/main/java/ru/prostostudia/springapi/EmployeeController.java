@@ -20,7 +20,6 @@ public class EmployeeController {
     public EmployeeController(EmployeeServiceInterface employeeService, DepartmentServiceInterface departmentService) {
         this.employeeService = employeeService;
         this.departmentService = departmentService;
-        departmentService.Init(employeeService);
     }
 
     @GetMapping
