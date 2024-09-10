@@ -1,11 +1,15 @@
 package ru.prostostudia.springapi;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.prostostudia.springapi.exceptions.EmployeeAlreadyAddedException;
+import ru.prostostudia.springapi.exceptions.EmployeeBadRequest;
 import ru.prostostudia.springapi.exceptions.EmployeeNotFoundException;
 import ru.prostostudia.springapi.exceptions.EmployeeStorageIsFullException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Service
 public class EmployeeService implements EmployeeServiceInterface {
@@ -29,6 +33,12 @@ public class EmployeeService implements EmployeeServiceInterface {
         addEmployee("Навелий", "Навеяло", 3, 50_000);
         addEmployee("Прасковья", "Прошкина", 2, 30_000);
         setMaxEmployees(10);
+
+    }
+
+    private boolean isNameCorrect(String name) {
+
+        return StringUtils.isAllUpperCase(name.subSequence(0,1)) && StringUtils.isAlpha(name);
     }
 
     public int getMaxEmployees() {
@@ -46,7 +56,10 @@ public class EmployeeService implements EmployeeServiceInterface {
     }
 
     @Override
-    public Employee addEmployee(String firstName, String lastName) {
+    public Employee addEmployee(String firstName, String lastName)  {
+        if (!(isNameCorrect(firstName) && isNameCorrect(lastName)) ) {
+            throw new EmployeeBadRequest();
+        }
         if (employeesBook.size() >= maxEmployees) throw new EmployeeStorageIsFullException();
         try {
             findEmployee(firstName, lastName);
@@ -58,9 +71,11 @@ public class EmployeeService implements EmployeeServiceInterface {
         throw new EmployeeAlreadyAddedException();
     }
 
-
     @Override
     public void addEmployee(String firstName, String lastName, int department, double salary) {
+        if (!(isNameCorrect(firstName) && isNameCorrect(lastName)) ) {
+            throw new RuntimeException("Первые буквы Имени и Фамилии должны быть заглавными!");
+        }
         final Employee newemployee = new Employee(firstName, lastName, department, salary);
         employeesBook.put(newemployee.id(), newemployee);
     }
@@ -80,7 +95,6 @@ public class EmployeeService implements EmployeeServiceInterface {
         }
         throw new EmployeeNotFoundException();
     }
-
 
 }
 
