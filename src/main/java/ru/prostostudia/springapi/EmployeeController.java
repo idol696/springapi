@@ -1,11 +1,11 @@
 package ru.prostostudia.springapi;
 
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prostostudia.springapi.exceptions.EmployeeAlreadyAddedException;
+import ru.prostostudia.springapi.exceptions.EmployeeBadRequest;
 import ru.prostostudia.springapi.exceptions.EmployeeNotFoundException;
 import ru.prostostudia.springapi.exceptions.EmployeeStorageIsFullException;
 
@@ -40,7 +40,7 @@ public class EmployeeController {
     public Object employeeAdd(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
         try {
             return employeeService.addEmployee(firstName, lastName);
-        } catch (EmployeeAlreadyAddedException | EmployeeStorageIsFullException e) {
+        } catch (EmployeeAlreadyAddedException | EmployeeStorageIsFullException | EmployeeBadRequest e) {
             return e.getMessage();
         }
     }
